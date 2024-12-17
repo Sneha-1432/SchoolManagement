@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UV-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body style="background-image: url('/media/bg_image.jpg'); background-size: cover; background-position: center;">
+    <script>
+        // Get the access token from localStorage
+        const token = localStorage.getItem("access_token");
+
+        if (!token) {
+            window.location.href = "login.html";  // Redirect to login if no token
+        }
+    </script>
+    
+
+    <section id="menu">
+        <div class="logo">
+            <img src="/media/school-image.jpg" alt="Logo">
+            <h2>My School</h2>
+        </div>
+
+        <div class="items">
+            <li><i><a href="librarian.html">Librarian</a></i></li>
+            <li><i><a href="#">Office Staff</a></i></li>
+            <li><i><a href="student.html">Student</a></i></li>
+            <li><i><a href="#">Books</a></i></li>
+            <li><i><a href="#">Fee</a></i></li>
+            <li><i><a href="#">Library History</a></i></li>
+            <li><i><a href="#">Fee History</a></i></li>
+        </div>
+    </section>
+
+    <section id="interface">
+        <div class="navigation">
+            <div class="n1">
+                <div class="search">
+                    <i class="far fa-search"></i>
+                    <input type="text" placeholder="Search">
+                </div>
+            </div>
+            
+            <div class="profile">
+                <i class="far fa-bell"></i>
+                <img src="/media/admin_prof.jpg" alt="Profile">
+            </div>
+        </div>
+
+        <h3 class="i-name">Dashboard</h3>
+
+        <!-- Dashboard Content can go here, such as stats, etc. -->
+
+    </section>
+    <table>
+        <tbody>
+            <td>Add Librarian</td>
+            <td>Add staff</td>
+            <td>Add student</td>
+            <td>Add Books </td>
+            <td>Add Fee</td>
+
+        </tbody>
+    </table>
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login Page</h1>
+    
+    <form id="loginForm">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required><br><br>
+        
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required><br><br>
+        
+        <button type="submit">Login</button>
+    </form>
+
+    <script>
+        // Handle form submission
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevent form from refreshing the page
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            // Make API request to the backend login endpoint
+            fetch("http://127.0.0.1:8000/adminlogin/", {  // Change this to your backend URL
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Check if login was successful and handle token
+                if (data.token) {
+                    localStorage.setItem("auth_token", data.token);  // Store token in localStorage
+                    window.location.href = "home.html";  // Redirect to dashboard
+                } else {
+                    alert("Login failed: " + data.error);
+                }
+            })
+            .catch(error => {
+                alert("An error occurred: " + error);
+            });
+        });
+    </script>
+</body>
+</html>

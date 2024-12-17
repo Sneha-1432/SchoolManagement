@@ -1,0 +1,175 @@
+
+
+ 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UV-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body style="background-image: url('/media/bg_image.jpg'); background-size: cover; background-position: center;">
+    <script>
+        // Get the access token from localStorage
+        const token = localStorage.getItem("access_token");
+
+        if (!token) {
+            window.location.href = "login.html";  // Redirect to login if no token
+        } else {
+            // Fetch librarian details from the API
+            fetch("http://127.0.0.1:8000/librariandetails/", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();  // Parse the response as JSON
+                } else if (response.status === 401) {
+                    // Token expired or unauthorized
+                    window.location.href = "login.html";  // Redirect to login page
+                } else {
+                    console.error("Error fetching data:", response.status);
+                    window.location.href = "login.html";  // Handle other errors
+                }
+            })
+            .then(data => {
+                console.log("Fetched Data:", data);  // Log the response to inspect it
+                
+                // Find the tbody element where rows will be inserted
+                const tableBody = document.querySelector("#librarian-table tbody");
+                
+                // Clear any existing rows
+                tableBody.innerHTML = "";
+
+                // Loop through the data and create rows dynamically
+                data.forEach(librarian => {
+
+                    console.log("Librarian ID:", librarian.id); 
+
+                    const { id, user, is_active } = librarian;
+                    const { username, first_name, last_name, email } = user;
+
+                    // Create a new table row
+                    const row = document.createElement("tr");
+
+                    // Set the inner HTML of the row with data
+                    row.innerHTML = `
+                        <td>${username}</td>
+                        <td>${first_name}</td>
+                        <td>${last_name}</td>
+                        <td>${email}</td>
+                        <td>${is_active ? "Active" : "Inactive"}</td>
+                        <td><a href="update.html?id=${user.id}">Update</a></td>
+                        <td><a href="#" class="delete-btn" data-id="${user.id}">Delete</a></td>
+                    `;
+
+                    // Append the row to the table body
+                    tableBody.appendChild(row);
+                });
+
+                // Add event listeners for the delete buttons
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const librarianId = event.target.getAttribute('data-id');
+                        deleteLibrarian(librarianId);
+                    });
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+                window.location.href = "login.html";  // Redirect to login on error
+            });
+        }
+
+        // Function to delete librarian record -->
+        <!-- function deleteLibrarian(id) {
+            const token = localStorage.getItem("access_token");
+            if (!token) {
+                window.location.href = "login.html";  // Redirect to login if no token
+                return;
+            }
+
+            // Send a DELETE request to delete the librarian
+            fetch(`http://127.0.0.1:8000/librariandetails/${id}/`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Librarian record deleted successfully!");
+                    location.reload();  // Reload the page to reflect the changes
+                } else {
+                    console.error("Error deleting librarian:", response.status);
+                    alert("Failed to delete librarian. Please try again.");
+                }
+            })
+            .catch(error => {
+                console.error("Error deleting librarian:", error);
+                alert("Error deleting librarian. Please try again.");
+            });
+        }
+    </script>
+
+    <section id="menu">
+        <div class="logo">
+            <img src="/media/school-image.jpg" alt="">
+            <h2>My School</h2>
+        </div>
+
+        <div class="items">
+            <li><i><a href="#">Librarian</a></i></li>
+            <li><i><a href="#">Office Staff</a></i></li>
+            <li><i><a href="student.html">Student</a></i></li>
+            <li><i><a href="#">Books</a></i></li>
+            <li><i><a href="#">Fee</a></i></li>
+            <li><i><a href="#">LibraryHistory</a></i></li>
+            <li><i><a href="#">FeeHistory</a></i></li>
+        </div>
+    </section>
+
+    <section id="interface">
+        <div class="navigation">
+            <div class="n1">
+                <div class="search">
+                    <i class="far fa-search"></i>
+                    <input type="text" placeholder="Search">
+                </div>
+            </div>
+            
+            <div class="profile">
+                <i class="far fa-bell"></i>
+                <img src="/media/admin_prof.jpg" alt="">
+            </div>
+        </div>
+
+        <h3 class="i-name">Librarians</h3>
+
+        <div class="board">
+            <table width="100%" id="librarian-table">
+                <thead>
+                    <tr>
+                        <td>UserName</td>
+                        <td>FirstName</td>
+                        <td>LastName</td>
+                        <td>Email</td>
+                        <td>Status</td>
+                        <td>Update</td>
+                        <td>Delete</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Librarian details will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+</body>
+</html>
